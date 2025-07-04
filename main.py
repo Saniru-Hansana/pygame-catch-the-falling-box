@@ -63,33 +63,11 @@ new_block = blocks()
 all_sprites.add(paddle)
 all_sprites.add(new_block)
 block_group.add(new_block)
-=======
-# Set up the display
-screen_width = 800
-screen_height = 600
-window = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("Catch the Falling Block")
-
-# Colors
-white = (255,255,255)
-red = (255,0,0)
-gray = (200,200,200)
-
-# Clock and font
-clock = pygame.time.Clock()
-font = pygame.font.SysFont(None, 36)
-
-# Paddle and falling block
-paddle = pygame.Rect(screen_width//2 - 60, screen_height - 30, 120, 10)
-block = pygame.Rect(random.randint(0, screen_width - 20), 0, 20, 20)
-block_speed = 5
 
 score = 0
-running = True
 game_over = False
-
+running = True
 while running:
-
     paddle_speed = 12
     for keys in pygame.event.get():
         if keys.type == pygame.QUIT:
