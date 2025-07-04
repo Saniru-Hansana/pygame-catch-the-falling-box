@@ -1,5 +1,4 @@
 import pygame
-from pygame.locals import *
 import random
 import sys
 
@@ -10,87 +9,65 @@ pygame.init()
 screen_width = 800
 screen_height = 600
 window = pygame.display.set_mode((screen_width, screen_height))
-window.fill((50,50,0))
+pygame.display.set_caption("Catch the Falling Block")
 
-pygame.display.set_caption("catch the falling ball")
-
-white = (255,255,255)
-blue = (0,0,255)
-red = (255,0,0)
-green = (0,255,255)
-yellow = (255,255,0)
-pink = (255,0,255)
-
-class Sq(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__ ()
-        self.surf = pygame.Surface((25,25))
-        self.surf.fill((200,200,200))
-
-#colors        
+# Colors
 white = (255,255,255)
 red = (255,0,0)
-blue = (0,0,255)
-green = (0,255,0)
+gray = (200,200,200)
 
-colors = [white,red,blue,green]
-
-#clock and font
+# Clock and font
 clock = pygame.time.Clock()
-font = pygame.font.SysFont(None,36)
+font = pygame.font.SysFont(None, 36)
 
-#paddle and block
-paddle = pygame.Rect(screen_width//2-60,screen_height - 20 ,120,10)
-block = pygame.Rect(random.randint(0,screen_width-20),0,20,20)
-b_speed = 5
-
-score = 0 #Score
+# Paddle and falling block
+paddle = pygame.Rect(screen_width//2 - 60, screen_height - 30, 120, 10)
+block = pygame.Rect(random.randint(0, screen_width - 20), 0, 20, 20)
+block_speed = 5
+score = 0
 
 running = True
+game_over = False
 
 while running:
-    window.fill((50,50,0))
     for event in pygame.event.get():
-        if event.type == pygame.QUIT :
+        if event.type == pygame.QUIT:
             running = False
-        
-    #paddle movements
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT] and paddle.left > 0 :
-        paddle.move_ip(-8,0)
-    if keys[pygame.K_RIGHT] and paddle.right < screen_width :
-        paddle.move_ip(8,0)
 
-    #move block
-    block.y += b_speed
+    if not game_over:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] and paddle.left > 0:
+            paddle.move_ip(-8, 0)
+        if keys[pygame.K_RIGHT] and paddle.right < screen_width:
+            paddle.move_ip(8, 0)
 
-    #block caught
+        block.y += block_speed
 
-    if block.colliderect(paddle):
-        block.y = 0
-        block.x = random.randint(0,screen_width-20)
-        score += 1
-        b_speed += 0.5 #speed up
+        # Caught
+        if paddle.colliderect(block):
+            block.y = 0
+            block.x = random.randint(0, screen_width - 20)
+            score += 1
+            block_speed += 0.5
 
-    #block missed
+        # Missed
+        if block.y > screen_height:
+            game_over = True
 
-    if block.y > screen_height :
-        game_over = font.render(f'Game over! Final Score : {score}',True,red)
+    # Draw everything
+    window.fill((30, 30, 30))
+    pygame.draw.rect(window, red, paddle)
+    pygame.draw.rect(window, gray, block)
 
-        window.blit(game_over,(screen_width//2-150,screen_height//2))
-        pygame.display.flip()
-        pygame.time.wait(2000)
-        run = False
-        pygame.quit()
-        sys.exit()
+    score_text = font.render(f"Score: {score}", True, white)
+    window.blit(score_text, (10, 10))
 
-    # draw Objects
-    pygame.draw.rect(window,white,paddle)
-    pygame.draw.rect(window,blue,block)
-    
-    # Display score
-    score_text = font.render(f'Score : {score}',True,white)
-    window.blit(score_text,(10,10))
-    
+    if game_over:
+        over_text = font.render(f"Game Over! Final Score: {score}", True, red)
+        window.blit(over_text, (screen_width//2 - 170, screen_height//2))
+
     pygame.display.flip()
     clock.tick(60)
+
+pygame.quit()
+sys.exit()
