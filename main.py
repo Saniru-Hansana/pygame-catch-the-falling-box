@@ -43,7 +43,7 @@ class blocks(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(0,800 - self.rect.width)
         self.rect.y = -10
-    
+    #update
     def update(self):
         self.rect.y += (random.randint(1,12))
         if self.rect.y > 550 :
